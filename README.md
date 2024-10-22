@@ -14,6 +14,15 @@ sudo apt update
 sudo apt upgrade
 ```
 # Github projekt beállítása
+Git telepítése: 
+```console
+sudo apt-get install git
+```
+Könyvtár klónozása:
+```console
+sudo git clone https://github.com/DanielBrenn/Hydroponics-systems.git
+```
+
 
 #  Docker container telepítése
 
