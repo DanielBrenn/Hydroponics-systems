@@ -78,4 +78,7 @@ grafana
 ```console
 docker pull grafana/grafana
 ```
+<<<<<<< HEAD
 Teszt
+=======
+>>>>>>> refs/remotes/origin/main
