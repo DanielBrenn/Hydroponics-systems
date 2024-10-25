@@ -49,3 +49,32 @@ echo \
   sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 sudo apt-get update
 ```
+
+```console
+# Install docker container
+sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+# Containerek beállítása Docker segítségével
+
+A vezérlésért felelős grafikus felületen progrmaozható node-red:
+nodered:
+```console
+docker pull nodered/node-red
+```
+
+Mqtt borker 
+mosquitto
+```console
+docker pull eclipse/mosquitto
+```
+
+Data platform
+influxDB
+```console
+docker pull influxdb:latest
+```
+Data visualisation
+grafana
+```console
+docker pull grafana/grafana
+```
