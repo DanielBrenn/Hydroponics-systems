@@ -55,6 +55,7 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 # Containerek beállítása Docker segítségével
+Első lépésként a docker container adatbázisából letöltjük a projekthez szükséges image fileokat
 
 A vezérlésért felelős grafikus felületen progrmaozható node-red:
 nodered:
@@ -77,4 +78,24 @@ Data visualisation
 grafana
 ```console
 docker pull grafana/grafana
+```
+A letöltött image fileok inicializálása/indítása 
+
+```console
+docker run -d -t --name mosquitto eclipse-mosquitto
+```
+
+-d --detach  Run container in background and print container ID;
+-t, --tty    Allocate a pseudo-TTY;
+-p port setup;
+--name elnevezése majd a container-nek;
+
+```console
+docker run -d -t --name node-red nodered/node-red
+```
+```console
+docker run -d -t --name influxdb influxdb:latest
+```
+```console
+docker run -d -t --name grafana grafana/grafana
 ```
