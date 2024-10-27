@@ -65,7 +65,7 @@ docker pull nodered/node-red
 Mqtt borker 
 mosquitto
 ```console
-docker pull eclipse/mosquitto
+docker pull eclipse-mosquitto
 ```
 
 Data platform
