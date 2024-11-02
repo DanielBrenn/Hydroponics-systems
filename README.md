@@ -54,8 +54,7 @@ sudo apt-get update
 # Install docker container
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
-# Containerek beállítása Docker segítségével
-Első lépésként a docker container adatbázisából letöltjük a projekthez szükséges image fileokat
+# Containerek letöltése
 
 A vezérlésért felelős grafikus felületen progrmaozható node-red:
 nodered:
@@ -66,7 +65,7 @@ docker pull nodered/node-red
 Mqtt borker 
 mosquitto
 ```console
-docker pull eclipse-mosquitto
+docker pull eclipse/mosquitto
 ```
 
 Data platform
@@ -79,23 +78,27 @@ grafana
 ```console
 docker pull grafana/grafana
 ```
-A letöltött image fileok inicializálása/indítása 
+# Containerek futtatása
+Fontos megjegyezni, hogy minden egyes container egymástól függetlenül futnak.
+  Tulajdonságaik ezeknek a containereknek:
+    - Minden container saját erőforrásokkal rendelkezik->ha egy container összeomlik nem befolyásolja a többi modult
+    - Saját virtuális hálózatot alkot (egyedi IP cím)
+    - A hálózatokat docker container egy virtuális switch-el köti össze->egy containerek között van lehetőség TCP/IP protocollal kommunikálni, de containeren kívülre sükséges a prot forwarding 
+
+Első lépésként beállítjuk a "restart policies" azaz megadjuk, hogy hogyan induljonanak el docker containerek indításkor. Cél az, hogy esteleges hiba esetén, illetve indításkor automatikus elinduljon.
 
 ```console
-docker run -d -t --name mosquitto eclipse-mosquitto
+sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped grafana/grafana
 ```
 
--d --detach  Run container in background and print container ID;
--t, --tty    Allocate a pseudo-TTY;
--p port setup;
---name elnevezése majd a container-nek;
+```console
+sudo docker run -t -d -p 1880:1880 -v /home/user/node_red_data:/data --name logic --restart unless-stopped nodered/node-red
+```
 
 ```console
-docker run -d -t --name node-red nodered/node-red
+sudo docker run -t -d --name database --restart unless-stopped influxdb:latest
 ```
+
 ```console
-docker run -d -t --name influxdb influxdb:latest
-```
-```console
-docker run -d -t --name grafana grafana/grafana
+sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse/mosquitto
 ```
