@@ -65,7 +65,7 @@ docker pull nodered/node-red
 Mqtt borker 
 mosquitto
 ```console
-docker pull eclipse/mosquitto
+docker pull eclipse-mosquitto
 ```
 
 Data platform
@@ -100,5 +100,5 @@ sudo docker run -t -d --name database --restart unless-stopped influxdb:latest
 ```
 
 ```console
-sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse/mosquitto
+sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse-mosquitto
 ```
