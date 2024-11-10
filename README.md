@@ -92,7 +92,7 @@ sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped graf
 ```
 
 ```console
-sudo docker run -t -d -p 1880:1880 -v /home/user/node_red_data:/data --name logic --restart unless-stopped nodered/node-red
+sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v -v node_red_data:/data --name logic nodered/node-red
 ```
 
 ```console
