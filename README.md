@@ -102,3 +102,6 @@ sudo docker run -t -d --name database --restart unless-stopped influxdb:latest
 ```console
 sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse/mosquitto
 ```
+# Access point inicilalizálása
+Ez a funkció a későbbiekben a kész termék meglévő hálózatba való integrálásnál fogja betölteni a szerepét. 
+Működése: az operációs rendszer felállása után közvetlenül az RPI lefuttat egy python scriptet, ami egy interupton keresztül (trigger high->low átmenet) figyeli GPIO4-es pint. 
