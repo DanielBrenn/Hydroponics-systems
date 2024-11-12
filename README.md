@@ -65,7 +65,7 @@ docker pull nodered/node-red
 Mqtt borker 
 mosquitto
 ```console
-docker pull eclipse/mosquitto
+docker pull eclipse-mosquitto
 ```
 
 Data platform
@@ -92,7 +92,7 @@ sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped graf
 ```
 
 ```console
-sudo docker run -t -d -p 1880:1880 -v /home/user/node_red_data:/data --name logic --restart unless-stopped nodered/node-red
+sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v -v node_red_data:/data --name logic nodered/node-red
 ```
 
 ```console
@@ -100,7 +100,7 @@ sudo docker run -t -d --name database --restart unless-stopped influxdb:latest
 ```
 
 ```console
-sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse/mosquitto
+sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse-mosquitto
 ```
 # Access point inicilalizálása
 Ez a funkció a későbbiekben a kész termék meglévő hálózatba való integrálásnál fogja betölteni a szerepét. 
