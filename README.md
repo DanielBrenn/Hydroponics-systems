@@ -96,12 +96,39 @@ sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v -v node_red_data:
 ```
 
 ```console
-sudo docker run -t -d --name database --restart unless-stopped influxdb:latest
+sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
 ```
 
 ```console
-sudo docker run -t -d --name mqttbroker --restart unless-stopped eclipse-mosquitto
+sudo docker run -t -d -p 1883:1883 --name mqttbroker --restart unless-stopped eclipse-mosquitto
 ```
+
 # Access point inicilalizálása
 Ez a funkció a későbbiekben a kész termék meglévő hálózatba való integrálásnál fogja betölteni a szerepét. 
 Működése: az operációs rendszer felállása után közvetlenül az RPI lefuttat egy python scriptet, ami egy interupton keresztül (trigger high->low átmenet) figyeli GPIO4-es pint. 
+
+Elsőként létre kell hozni a scriptet ami lefut amikor elindul az operációs rendszer:
+Projekt mappába navigálunk:
+
+```console
+cd /
+cd/home/Hydroponics-systems
+```
+
+A létehozzuk a launcher filet ami meghívja majd a scriptet
+```console
+sudo nano launcher.sh
+```
+Tartalma:
+cd/
+cd home/rpi4/Hydroponics-systems
+sudo python3 access-point-set.py
+cd/
+
+Hydrophonics mapában létrehozunk egy log nevezetű mappát
+
+Magát a launcher.sh corntrab háttérben futó sprogrammal lesz időzítve
+```console
+sudo crontab -e
+```
+@reboot sh /home/rpi4/bbt/launcher.sh >/home/rpi4/logs/cronlog 2>&1
