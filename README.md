@@ -55,6 +55,13 @@ sudo apt-get update
 sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 ```
 # Containerek letöltése
+Legkönnyebben a különböző konténerek https://hub.docker.com/ oldalon találhatóak meg összefoglalva
+
+
+A konténerek kezeléséhez webalapú kezeléséhez:
+```console
+docker pull portainer/portainer-ce:linux-arm 
+```
 
 A vezérlésért felelős grafikus felületen progrmaozható node-red:
 nodered:
@@ -87,6 +94,15 @@ Fontos megjegyezni, hogy minden egyes container egymástól függetlenül futnak
 
 Első lépésként beállítjuk a "restart policies" azaz megadjuk, hogy hogyan induljonanak el docker containerek indításkor. Cél az, hogy esteleges hiba esetén, illetve indításkor automatikus elinduljon.
 
+A konténereken belüli file rendszer eléréséhez
+```console
+sudo docker run -ti -v $(pwd):/mnt ubuntu bash
+```
+
+```console
+sudo docker run -d -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:linux-arm
+```
+
 ```console
 sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped grafana/grafana
 ```
@@ -94,6 +110,8 @@ sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped graf
 ```console
 sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v -v node_red_data:/data --name logic nodered/node-red
 ```
+Forrás: https://nodered.org/docs/getting-started/docker
+
 
 ```console
 sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
@@ -102,6 +120,15 @@ sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped inf
 ```console
 sudo docker run -t -d -p 1883:1883 --name mqttbroker --restart unless-stopped eclipse-mosquitto
 ```
+
+Indítás után a következő címeken érhetőek el a konténerek:
+•Portainer: https://raspberrypi.local:9443/
+•Grafana: raspberrypi.local:3000/
+•Node Red: raspberrypi.local:1880/
+•InfluxDB: raspberrypi.local:8086/
+•Mosquitto: raspberrypi.local:1883/
+
+
 
 # Access point inicilalizálása
 Ez a funkció a későbbiekben a kész termék meglévő hálózatba való integrálásnál fogja betölteni a szerepét. 
@@ -132,3 +159,12 @@ Magát a launcher.sh corntrab háttérben futó sprogrammal lesz időzítve
 sudo crontab -e
 ```
 @reboot sh /home/rpi4/bbt/launcher.sh >/home/rpi4/logs/cronlog 2>&1
+
+# Node-red beállítása
+Eddigekben a Node-red apaverziója lett telepítve, ami még nem alkalmas a RPI I/O pinjeinek a kezelésére, illetve nem tartalmazza még a kommunikációhoz szüksége protokoll csomagokat.
+
+Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül nem lehet CMD-ből elérni):
+
+```console
+sudo docker exec logic ls
+```
