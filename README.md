@@ -160,6 +160,89 @@ sudo crontab -e
 ```
 @reboot sh /home/rpi4/bbt/launcher.sh >/home/rpi4/logs/cronlog 2>&1
 
+# MQTT protokkol
+
+## Mqtt általánosan:
+Az MQTT egy publis-subscribe alapon működő kommunikációs protokol, ahol az eszközök/adatgyűjtők (edge devices) egy központi szerverhez kapcsolódnak (MQTT broker) amin keresztül különböző topikokra/témákra iratkoznak fel. Adott eszközök adott topikokra iratkoznak fel az MQTT brokeren keresztül, így az eszközök kommunikáció szempontjából el vannak egymástól választva a broker által. 
+## Topicról általánosan:
+A topic azonosítja a kommunikációt pontosabban az elérendő információt, a feriatkozott eszközök között teremt kapcsolatot valamilyen tetszőleges logika szerint. Más szavakkal a topic információt címez meg tetszőleges logikával és ez az infromációt csak az arra feliratkozott eszközök érhetik el- ez képzi a kommunikációs csatornát.
+Egy topik egy eszköz számára lehet írható (publish), olvasható(subscribe) vagy egyszerre a kettő. Egy topic több eszköz által is elérhető lehet.
+A topicoc hierarhicus vagy többszintetes információ azonosítást tesz lehetővé.
+
+Szintek közötti alárendeltség:
+
+level1/ level2a/  level3a1  ...
+level1/ level2b   ..
+level1/ level2c   ...
+level1/ level2d   ...
+level1/ level2d/  level3d1  ...
+level1/ level2d/  level3d2  ...
+level1/ level2d/  level3d3  ...
+level1/ level2d/  level3d4  ...
+
+Hidroponiás rendszer esetében a következő struktúra lesz alkalmazva:
+
+{% rowheaders %}
+
+|level1       | level2 | level3  | 
+|-------------|--------|---------|
+|DataCol      |DataType|DataValue|
+
+{% endrowheaders %}
+
+Ahol:
+DataCol - Adatgyűjtőt azonosítja
+DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték, Beállított érték (ha van), Kalibrációs és Jelleggörbe paraméterek (ha van)
+
+|DataType                       | 
+|---------|---------|-----------|
+|Current  | SetVal  | FunParam  | 
+|---------|---------|-----------|
+|ECstate 	|ECset 		|ECcp1V		  |
+| 		    | 		    |ECcp2V		  |
+| 		    | 		    |ECcp1CONC	|
+| 		    | 		    |ECcp2CONC	|
+|Phstate 	|Phset 		|PHcp1V		  |
+| 		    | 		    |PHcp2V		  |
+| 		    | 		    |PHcp1PH 	  |
+| 		    | 		    |PHcp2PH	  |
+|NO3state	|NO3set 	|NO3cp1V	  |
+| 		    | 		    |NO3cp2V	  |
+| 		    | 		    |NO3cp2CONC	|
+| 		    | 		    |NO3cp1CONC	|
+|Kstate 	|Kset 		|Kcp1V	 	  |
+| 		    | 		    |Kcp2V		  |
+| 		    | 		    |Kcp1CONC	  |
+| 		    | 		    |Kcp2CONC	  |
+|Castate 	|Caset 		|Cacp1V		  |
+| 		    | 		    |Cacp2V		  |
+| 		    | 		    |Cacp1CONC	|
+| 		    | 		    |Cacp2CONC	|
+|Mgstate 	|Mgset 		|Mgcp1V		  |
+| 		    | 		    |Mgcp2V		  |
+| 		    | 		    |Mgcp1CONC	|
+| 		    | 		    |Mgcp2CONC	|
+|Kstate 	|Kset 		|Kcp1V		  |
+| 		    | 		    |Kcp2V		  |
+| 		    | 		    |Kcp1CONC	  |
+| 		    | 		    |Kcp2CONC	  |
+|WTstate 	|WTset 		|Wvolume	  |
+| 		    | 		    |Whp 		    |
+|ATstate 	|ATset 		|RV 		    |
+| 		    | 		    |HSP 		    |
+|AHstate 	|AHset 		|RV 		    |
+| 		    | 		    |HP 		    |
+|WLstate 	|WLset 		|WContCross	|
+| 		    | 		    |WlevSenOFFset	|
+|PPI1state|- 		    |PPparam1	|
+|PPI2state|- 		    |PPparam2	|
+|PPI3state|- 		    |PPparam3	|
+|PPI4state|- 		    |PPparam4	|
+|PPI5state|- 		    |PPparam4	|
+|RecPumpstate|RecWCurset|RecPumpParam	|
+|MixPumpstate|MixWCurset|MixPumpParam	|
+
+
 # Node-red beállítása
 Eddigekben a Node-red apaverziója lett telepítve, ami még nem alkalmas a RPI I/O pinjeinek a kezelésére, illetve nem tartalmazza még a kommunikációhoz szüksége protokoll csomagokat.
 
@@ -168,3 +251,5 @@ Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül n
 ```console
 sudo docker exec logic ls
 ```
+
+
