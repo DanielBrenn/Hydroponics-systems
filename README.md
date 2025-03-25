@@ -194,6 +194,8 @@ Ahol:
 DataCol - Adatgyűjtőt azonosítja
 DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték, Beállított érték (ha van), Kalibrációs és Jelleggörbe paraméterek (ha van)
 
+{% rowheaders %}
+
 |DataType                       | 
 |---------|---------|-----------|
 |Current  | SetVal  | FunParam  | 
@@ -241,6 +243,8 @@ DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték, Beállított �
 |PPI5state|- 		    |PPparam4	|
 |RecPumpstate|RecWCurset|RecPumpParam	|
 |MixPumpstate|MixWCurset|MixPumpParam	|
+
+{% endrowheaders %}
 
 
 # Node-red beállítása
