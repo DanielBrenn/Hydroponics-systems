@@ -196,8 +196,7 @@ DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték, Beállított �
 
 {% rowheaders %}
 
-|DataType                       | 
-|---------|---------|-----------|
+
 |Current  | SetVal  | FunParam  | 
 |---------|---------|-----------|
 |ECstate 	|ECset 		|ECcp1V		  |
