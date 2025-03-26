@@ -108,10 +108,15 @@ sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped graf
 ```
 
 ```console
-sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v -v node_red_data:/data --name logic nodered/node-red
+sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v myNodeREDdata:/data --device /dev:/dev --name nodered nodered/node-red
 ```
-Forrás: https://nodered.org/docs/getting-started/docker
-
+Részek funkciója:
+--restart: esetleges leállást, hogyan kezelje a docker
+-v: a conténer mapparendszerét  myNodeREDdata a konténeren kívülli rendszer mapparendszerrel /data (conténer:külső mappa)
+--device: elérhetővé tesz a konténer számára konténeren kívüli erőforrások/mappák elérést
+Forrás: 
+https://nodered.org/docs/getting-started/docker
+https://docs.docker.com/reference/cli/docker/container/run/#device
 
 ```console
 sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
@@ -192,11 +197,12 @@ Hidroponiás rendszer esetében a következő struktúra lesz alkalmazva:
 
 Ahol:
 DataCol - Adatgyűjtőt azonosítja
-DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték, Beállított érték (ha van), Kalibrációs és Jelleggörbe paraméterek (ha van)
+DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték (Current), Beállított érték (SetVal)(ha van), Kalibrációs és Jelleggörbe paraméterek (FunParam) (ha van)
 
 {% rowheaders %}
 
 
+|---------|---------|-----------|
 |Current  | SetVal  | FunParam  | 
 |---------|---------|-----------|
 |ECstate 	|ECset 		|ECcp1V		  |
