@@ -22,7 +22,11 @@ Könyvtár klónozása:
 ```console
 sudo git clone https://github.com/DanielBrenn/Hydroponics-systems.git
 ```
-
+# NPM installálása 
+Ez későbbiekben különbőző kiegészítők telepítéséshez
+``` console
+sudo apt-get install nodejs npm
+```
 
 #  Docker container telepítése
 Ha előzetesen volt telepítve docker container, akkor a következő parancssorral lehet lecserélni a régi verziót:
@@ -63,11 +67,11 @@ A konténerek kezeléséhez webalapú kezeléséhez:
 docker pull portainer/portainer-ce:linux-arm 
 ```
 
-A vezérlésért felelős grafikus felületen progrmaozható node-red:
-nodered:
-```console
-docker pull nodered/node-red
-```
+A vezérlésért felelős grafikus felületen progrmaozható node-red (későbbiekben lesz telepítve docker konténeren kívül oka: lásd később):
+~~nodered:~~
+
+~~ocker pull nodered/node-red~~
+
 
 Mqtt borker 
 mosquitto
@@ -94,6 +98,10 @@ Fontos megjegyezni, hogy minden egyes container egymástól függetlenül futnak
 
 Első lépésként beállítjuk a "restart policies" azaz megadjuk, hogy hogyan induljonanak el docker containerek indításkor. Cél az, hogy esteleges hiba esetén, illetve indításkor automatikus elinduljon.
 
+~~IO kezeléséhez kell majd ~~
+~~sudo docker run -d -p 8888:8888 --privileged --name gpiod corbosman/pigpiod ~~
+
+
 A konténereken belüli file rendszer eléréséhez
 ```console
 sudo docker run -ti -v $(pwd):/mnt ubuntu bash
@@ -108,7 +116,7 @@ sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped graf
 ```
 
 ```console
-sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v myNodeREDdata:/data --device /dev:/dev --name nodered nodered/node-red
+sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v /home/nodereddata:/data --name logic nodered/node-red
 ```
 Részek funkciója:
 --restart: esetleges leállást, hogyan kezelje a docker
@@ -122,14 +130,13 @@ https://docs.docker.com/reference/cli/docker/container/run/#device
 sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
 ```
 
-```console
-sudo docker run -t -d -p 1883:1883 --name mqttbroker --restart unless-stopped eclipse-mosquitto
-```
+~~sudo docker run -t -d -p 1883:1883 --name mqttbroker --restart unless-stopped eclipse-mosquitto~~
+
 
 Indítás után a következő címeken érhetőek el a konténerek:
 •Portainer: https://raspberrypi.local:9443/
 •Grafana: raspberrypi.local:3000/
-•Node Red: raspberrypi.local:1880/
+~~•Node Red: raspberrypi.local:1880/~~
 •InfluxDB: raspberrypi.local:8086/
 •Mosquitto: raspberrypi.local:1883/
 
@@ -156,6 +163,26 @@ cd/
 cd home/rpi4/Hydroponics-systems
 sudo python3 access-point-set.py
 cd/
+
+access-point-set file tartalma:
+
+```code
+import RPi.GPIO as GPIO
+import os
+import time
+
+BUTTON_GPIO = 11
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+print("Script has started")
+
+GPIO.wait_for_edge(BUTTON_GPIO, GPIO.FALLING)
+print("Button was pushed")
+os.system("sudo nmcli device disconnect wlan0")
+os.system("sudo nmcli device up wlan0")
+os.system("sudo nmcli device wifi hotspot ssid rpi4 password 12345678")
+GPIO.cleanup()
+```
 
 Hydrophonics mapában létrehozunk egy log nevezetű mappát
 
@@ -250,15 +277,85 @@ DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték (Current), Beá
 |MixPumpstate|MixWCurset|MixPumpParam	|
 
 {% endrowheaders %}
+# Node-red
 
+## Node-red telepítése docker konténeren kívül
+Oka: mivel a konténeren belüli elemek nem képesek elérni közvetlenül a kernell szintű elemeket így a Node-red nem képes kiegészítő lépések nélkül vezérelni a GPIO portokat. Az előbb emített kiegészítő lépések minden egyes egyedi funkció/könyvtár telepítésénél szükséges elvégezni, emiatt új könyvtárak telepítése megnehezül, illetve minden könyvtár esetében egyedileg kell megoldani, hogy a kernell megfelelő részét elérje az adott modul/könyvtár.
 
-# Node-red beállítása
-Eddigekben a Node-red apaverziója lett telepítve, ami még nem alkalmas a RPI I/O pinjeinek a kezelésére, illetve nem tartalmazza még a kommunikációhoz szüksége protokoll csomagokat.
-
-Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül nem lehet CMD-ből elérni):
+## Node-red telepítése
+Először navigáljuk a projekt könyvtárba
+```console
+  cd /home/rpi4/Hydroponics-systems/
+```
+Következő lépésben telepítjük a Node-Red modult:
+```console
+  bash <(curl -sL https://raw.githubusercontent.com/node-red/linux-installers/master/deb/update-nodejs-and-nodered)
+```
+Majd beállítjuk, hogy a rendszer indításakor elinduljon a Node-red modul 
 
 ```console
-sudo docker exec logic ls
+sudo systemctl enable nodered.service
 ```
+Fontos !! Node-red innetől kezdve a lokális hálózaton elérhető bárki által!!
+
+## Node red specifikus infó:
+•Node-Red indítása
+  ```console
+  node-red-start
+  ```
+•Node-Red beállítása:
+  ```console
+  node-red admin init
+  ```
+•Node-red eléréshi címe+port szám
+  localhost:1880
+•Important folders:
+  Password management
+  /etc/sudoers.d/010_pi-nopasswd
+  Install-log:
+  /var/log/nodered-install.log
+  
+
+## Node-red beállítása
+Eddigekben a Node-red apaverziója lett telepítve, ami még nem alkalmas a RPI I/O pinjeinek a kezelésére, illetve nem tartalmazza még a kommunikációhoz szüksége protokoll csomagokat.
+
+Modulok Node-Red 
+
+DHT-11 szenzor:
+```console
+sudo npm install --unsafe-perm -g node-red-contrib-dht-sensor
+ ```
 
 
+<del>
+  node-red-node-pi-gpiod
+  /etc/rc.local filet /usr/bin/pigpiod sorral
+  majd a noderedhez tartozó
+
+  Ehhez szüksége kiegészíteni
+
+  Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül nem lehet CMD-ből elérni):
+  ```console
+  sudo docker exec -it logic bash 
+  ```
+  GPIO kezeléséhez telepíteni kell:
+  ```console
+  npm install node-red-contrib-gpio
+  ```
+
+
+  GPIO telepítése kernell szinten:
+  Első lépésként navigéljunk a raspberry pi gyökérkönyvtárába:
+
+  ```console
+    sudo apt install git
+    git clone https://github.com/WiringPi/WiringPi.git
+    cd WiringPi
+    ./build debian
+    mv debian-template/wiringpi_3.14_arm64.deb . 
+    sudo apt install ./wiringpi_3.14_arm64.deb 
+    ```
+
+  GPIO kezeléséhez:
+    sudo apt-get install python3-rpi.gpio
+</del>

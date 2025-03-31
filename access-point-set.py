@@ -3,7 +3,7 @@ import os
 import time
 
 
-BUTTON_GPIO = 4
+BUTTON_GPIO = 11
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(BUTTON_GPIO, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 print("Script has started")
