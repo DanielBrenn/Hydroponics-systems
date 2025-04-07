@@ -354,7 +354,7 @@ sudo npm install --unsafe-perm -g node-red-contrib-dht-sensor
     ./build debian
     mv debian-template/wiringpi_3.14_arm64.deb . 
     sudo apt install ./wiringpi_3.14_arm64.deb 
-    ```
+  ```
 
   GPIO kezeléséhez:
     sudo apt-get install python3-rpi.gpio
