@@ -363,5 +363,3 @@ sudo npm install --unsafe-perm -g node-red-contrib-dht-sensor
 # Projekt felépítése és az eszközök kapcsolása
 
 ![Kapcs rajz](https://github.com/user-attachments/assets/d2893274-def7-48c9-8210-579c7a1ea96d)
-
-TEST
