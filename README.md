@@ -204,12 +204,19 @@ A topicoc hierarhicus vagy többszintetes információ azonosítást tesz lehet�
 Szintek közötti alárendeltség:
 
 level1/ level2a/  level3a1  ...
+
 level1/ level2b   ..
+
 level1/ level2c   ...
+
 level1/ level2d   ...
+
 level1/ level2d/  level3d1  ...
+
 level1/ level2d/  level3d2  ...
+
 level1/ level2d/  level3d3  ...
+
 level1/ level2d/  level3d4  ...
 
 Hidroponiás rendszer esetében a következő struktúra lesz alkalmazva:
@@ -319,7 +326,33 @@ Fontos !! Node-red innetől kezdve a lokális hálózaton elérhető bárki ált
 ## Node-red beállítása
 Eddigekben a Node-red apaverziója lett telepítve, ami még nem alkalmas a RPI I/O pinjeinek a kezelésére, illetve nem tartalmazza még a kommunikációhoz szüksége protokoll csomagokat.
 
-Modulok Node-Red 
+Modulok Node-Red:
+•node-red
+4.0.9
+•node-red-contrib-ads1x15_i2c
+0.0.14
+•node-red-contrib-buffer-parser
+3.2.2
+•node-red-contrib-dht-sensor
+1.0.4
+•node-red-contrib-ds18b20-sensor
+1.3.6
+•node-red-contrib-influxdb
+0.7.0
+•node-red-contrib-play-audio
+2.5.0
+•node-red-node-pi-gpio
+2.0.6
+•node-red-node-ping
+0.3.3
+•node-red-node-pisrf
+0.4.0
+•node-red-node-random
+0.4.1
+•node-red-node-serialport
+2.0.3
+•node-red-node-smooth
+
 
 DHT-11 szenzor:
 ```console
@@ -359,6 +392,39 @@ sudo npm install --unsafe-perm -g node-red-contrib-dht-sensor
   GPIO kezeléséhez:
     sudo apt-get install python3-rpi.gpio
 </del>
+
+
+# InfluxDB 
+Az InfluxDB felelős az időben rögzített (time-series data) adatok rendszerezéséért és tárolásáért. 
+Fontos megjegyezni InfluxDB v2 volt használva, mind a Node-Red, mind a Grafanaval való kapcsolatnál fontos lesz.
+Az adatokat a következő logika szerint tárolja:
+
+1. Bucket (TESTINGBUCKET): ez fogja össze az összes mért adatot fő gyűjtő kategória,
+
+2. •Mesurment(Tesdata_n): alkategória amely a mérési adatcsomagokat választja szét jelen esetben különböző mérőkörökből (különálló rendszerből álló) adatokat foglalja össze
+  •Field: mérési adattípusok szerint választja szét (pl. víz hőméréskletet(WTstate) és a levegő hőmérsékletet(ATstate) választja szét kategóriákra)
+  •Tags: az adatokhoz kapcsolt metaadat ami az adatok további szűrésére szolgál (nem volt használva)
+  •Timestamp: minden adatponthoz hozzá van rögzítve 
+Ezek együttesen azonosítják az adatokat.
+
+
+## InfluxDB beállítása
+Beállításhoz el kell navigálni http://localhost:8086 címre vagy ha nem működik meg kell keresni a RPI IP címét hostname -i consol parancsal és a localhost helyére kell írni a parancs által adott ip címet. Ezután a következő lépéseket kell megtenni.
+
+1. Be kell állítani az autentikációt
+2. kreálni kell egy új Organizációt (Testing) (Később ehhez fogja küldeni az adatokat a Node-Red gyakorlatilag egy külön gyűjtő paraméter, amelyhez tartozik hozzáférési jogokkal rendelkezik)
+3. Kreálni kell egy bucketet (TESTINGBUCKET) (Fő gyűjtő kategória)
+4. Kreálni kell egy a buckethez tartozó api token-t/kulcsot írási és olvasási joggal (InfluxDB v2 sajátossága) 
+
+
+## Kommunikáció Node-Red és InfluxDB között
+A kommunikáció megvalósításához több feltételnek teljesülnie kell.
+•Szükséges ismerni, hogy az InfluxDB milyen ip címe érhető el: http://localhost:8086 (Docker container beállításánál)
+•Szükséges a kiválasztott bucketnek generált access token (InfluxDB ben kell beállítani)
+•Ismerni kell az InluxDB Organization ID-t (EZ fogja azonosítani, hogy melyik "felhasználóhoz" fusson be az adat) (InfluxDB ben kell beállítani),
+•Bucket nevére, melyik bucketbe lesz egységesen gyűjtve az adat, (InfluxDB ben kell beállítani).
+•Measurment milyen measument néven lesz mentve az adott rendszerből származó adatot (Node-Red-től érkezik).
+
 
 # Projekt felépítése és az eszközök kapcsolása
 
