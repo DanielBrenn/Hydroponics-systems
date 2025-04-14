@@ -361,36 +361,37 @@ sudo npm install --unsafe-perm -g node-red-contrib-dht-sensor
 
 
 <del>
-  node-red-node-pi-gpiod
-  /etc/rc.local filet /usr/bin/pigpiod sorral
-  majd a noderedhez tartozó
+node-red-node-pi-gpiod
+/etc/rc.local filet /usr/bin/pigpiod sorral
+majd a noderedhez tartozó
 
-  Ehhez szüksége kiegészíteni
+Ehhez szüksége kiegészíteni
 
-  Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül nem lehet CMD-ből elérni):
-  ```console
-  sudo docker exec -it logic bash 
-  ```
-  GPIO kezeléséhez telepíteni kell:
-  ```console
-  npm install node-red-contrib-gpio
-  ```
+Következő módon lehet elérni a NODE-Red konténer belsejét (közvetlenül nem lehet CMD-ből elérni):
+```console
+sudo docker exec -it logic bash 
+```
+GPIO kezeléséhez telepíteni kell:
+```console
+npm install node-red-contrib-gpio
+```
 
 
-  GPIO telepítése kernell szinten:
-  Első lépésként navigéljunk a raspberry pi gyökérkönyvtárába:
+GPIO telepítése kernell szinten:
+Első lépésként navigéljunk a raspberry pi gyökérkönyvtárába:
 
-  ```console
-    sudo apt install git
-    git clone https://github.com/WiringPi/WiringPi.git
-    cd WiringPi
-    ./build debian
-    mv debian-template/wiringpi_3.14_arm64.deb . 
-    sudo apt install ./wiringpi_3.14_arm64.deb 
-  ```
+```console
+sudo apt install git
+git clone https://github.com/WiringPi/WiringPi.git
+cd WiringPi
+./build debian
+mv debian-template/wiringpi_3.14_arm64.deb . 
+sudo apt install ./wiringpi_3.14_arm64.deb 
+```
 
-  GPIO kezeléséhez:
-    sudo apt-get install python3-rpi.gpio
+GPIO kezeléséhez:
+  sudo apt-get install python3-rpi.gpio
+  
 </del>
 
 
