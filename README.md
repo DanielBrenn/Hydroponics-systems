@@ -101,32 +101,26 @@ Első lépésként beállítjuk a "restart policies" azaz megadjuk, hogy hogyan 
 ~~IO kezeléséhez kell majd~~
 ~~sudo docker run -d -p 8888:8888 --privileged --name gpiod corbosman/pigpiod~~
 
-
 A konténereken belüli file rendszer eléréséhez
 ```console
 sudo docker run -ti -v $(pwd):/mnt ubuntu bash
 ```
-
 ## Conténer vizuális kezeléséhez (Portainer):
 ```console
 sudo docker run -d -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:linux-arm
 ```
-
 ## Adatok és kezelőfelületért felelős szoftver (Grafana)
 ```console
 sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped grafana/grafana
 ```
-
 ## A logikáért és az egységek összekötéséért felelős rész (Node-Red):
 ```console
 sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v /home/nodereddata:/data --name logic nodered/node-red
 ```
-
 ## Az adatok tárolásáért felelős adatbázis (InfluxDB):
 ```console
 sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
 ```
-
 ## Mqtt kommunikációért felelős broker beállítása (Eclipse-Mosquitto):
 • Létre kell hozni a követekző mappa rendszert, hogy a futás közben generált adatokat a docker containerből kimentse a mosquitto-docker
 ```console
@@ -148,8 +142,10 @@ listener 1883
 allow_anonymous true
 ```
 •Végül el kell indítani a Mosquitto broker containert:
+
+```console
 docker run -d -t --name mosquitto --restart unless-stopped -p 1883:1883 -v ~/mosquitto/config:/mosquitto/config -v ~/mosquitto/data:/mosquitto/data -v ~/mosquitto/log:/mosquitto/log  eclipse-mosquitto
-  
+```
 
 Részek funkciója:
 --restart: esetleges leállást, hogyan kezelje a docker
