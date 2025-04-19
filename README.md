@@ -171,6 +171,11 @@ A jelszó beállítása a következő paranccsal történik: "mosquitto_passwd"
 docker run -d -t --name mosquitto --restart unless-stopped -p 1883:1883 -v ~/mosquitto/config:/mosquitto/config -v ~/mosquitto/data:/mosquitto/data -v ~/mosquitto/log:/mosquitto/log  eclipse-mosquitto
 ```
 
+•Mosquitto cliens telepítése teszteléshez:
+```console
+sudo apt install mosquitto-clients
+```
+
 Részek funkciója:
 --restart: esetleges leállást, hogyan kezelje a docker
 -v: a conténer mapparendszerét  myNodeREDdata a konténeren kívülli rendszer mapparendszerrel /data (conténer:külső mappa)
