@@ -138,10 +138,9 @@ A fájlba a következő beállítási paramétereket kell írni
 persistence true
 persistence_location /mosquitto/data/
 log_dest file /mosquitto/log/mosquitto.log
-password_file /mosquitto/config/pwfile
 persistence_file mosquitto.db
 listener 1883
-allow_anonymous false
+allow_anonymous true
 ```
 •Végül el kell indítani a Mosquitto broker containert:
 
