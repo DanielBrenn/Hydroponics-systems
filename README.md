@@ -133,7 +133,7 @@ mkdir -p ~/mosquitto/log
 ```console
 nano ~/mosquitto/config/mosquitto.conf
 ```
-A fájlba a következő beállítási paramétereket kell írni
+A fájlba a következő beállítási paramétereket kell írni (autentikáció nélkül)
 ```console
 persistence true
 persistence_location /mosquitto/data/
@@ -142,6 +142,29 @@ persistence_file mosquitto.db
 listener 1883
 allow_anonymous true
 ```
+•Autentikáció esetén (Alternatív beállítás)
+mosquitto.conf:
+-allow_anonymous false
+-password_file /mosquitto/config/pwfile
+```console
+touch ~/mosquitto/config/pwfile
+```
+
+```console
+# login interactively into the mqtt container
+sudo docker exec -it <container-id> sh
+
+# Create new password file and add user and it will prompt for password
+mosquitto_passwd -c /mosquitto/config/pwfile user1
+
+# Add additional users (remove the -c option) and it will prompt for password
+mosquitto_passwd /mosquitto/config/pwfile user2
+
+# delete user command format
+mosquitto_passwd -D /mosquitto/config/pwfile <user-name-to-delete>
+```
+A jelszó beállítása a következő paranccsal történik: "mosquitto_passwd"
+
 •Végül el kell indítani a Mosquitto broker containert:
 
 ```console
