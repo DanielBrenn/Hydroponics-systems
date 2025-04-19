@@ -122,6 +122,7 @@ sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v /home/nodereddata
 sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
 ```
 ## Mqtt kommunikációért felelős broker beállítása (Eclipse-Mosquitto):
+https://github.com/sukesh-ak/setup-mosquitto-with-docker
 • Létre kell hozni a követekző mappa rendszert, hogy a futás közben generált adatokat a docker containerből kimentse a mosquitto-docker
 ```console
 mkdir -p ~/mosquitto/config
@@ -137,9 +138,10 @@ A fájlba a következő beállítási paramétereket kell írni
 persistence true
 persistence_location /mosquitto/data/
 log_dest file /mosquitto/log/mosquitto.log
-
+password_file /mosquitto/config/pwfile
+persistence_file mosquitto.db
 listener 1883
-allow_anonymous true
+allow_anonymous false
 ```
 •Végül el kell indítani a Mosquitto broker containert:
 
