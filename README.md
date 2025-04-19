@@ -98,8 +98,8 @@ Fontos megjegyezni, hogy minden egyes container egymástól függetlenül futnak
 
 Első lépésként beállítjuk a "restart policies" azaz megadjuk, hogy hogyan induljonanak el docker containerek indításkor. Cél az, hogy esteleges hiba esetén, illetve indításkor automatikus elinduljon.
 
-~~IO kezeléséhez kell majd ~~
-~~sudo docker run -d -p 8888:8888 --privileged --name gpiod corbosman/pigpiod ~~
+~~IO kezeléséhez kell majd~~
+~~sudo docker run -d -p 8888:8888 --privileged --name gpiod corbosman/pigpiod~~
 
 
 A konténereken belüli file rendszer eléréséhez
@@ -107,17 +107,50 @@ A konténereken belüli file rendszer eléréséhez
 sudo docker run -ti -v $(pwd):/mnt ubuntu bash
 ```
 
+## Conténer vizuális kezeléséhez (Portainer):
 ```console
 sudo docker run -d -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:linux-arm
 ```
 
+## Adatok és kezelőfelületért felelős szoftver (Grafana)
 ```console
 sudo docker run -t -d -p 3000:3000 --name frontend --restart unless-stopped grafana/grafana
 ```
 
+## A logikáért és az egységek összekötéséért felelős rész (Node-Red):
 ```console
 sudo docker run -t -d -p 1880:1880 --restart unless-stopped -v /home/nodereddata:/data --name logic nodered/node-red
 ```
+
+## Az adatok tárolásáért felelős adatbázis (InfluxDB):
+```console
+sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
+```
+
+## Mqtt kommunikációért felelős broker beállítása (Eclipse-Mosquitto):
+• Létre kell hozni a követekző mappa rendszert, hogy a futás közben generált adatokat a docker containerből kimentse a mosquitto-docker
+```console
+mkdir -p ~/mosquitto/config
+mkdir -p ~/mosquitto/data
+mkdir -p ~/mosquitto/log
+```
+•Manuálisan létre kell hozni a következő szetup filet:
+```console
+nano ~/mosquitto/config/mosquitto.conf
+```
+A fájlba a következő beállítási paramétereket kell írni
+```console
+persistence true
+persistence_location /mosquitto/data/
+log_dest file /mosquitto/log/mosquitto.log
+
+listener 1883
+allow_anonymous true
+```
+•Végül el kell indítani a Mosquitto broker containert:
+docker run -d -t --name mosquitto --restart unless-stopped -p 1883:1883 -v ~/mosquitto/config:/mosquitto/config -v ~/mosquitto/data:/mosquitto/data -v ~/mosquitto/log:/mosquitto/log  eclipse-mosquitto
+  
+
 Részek funkciója:
 --restart: esetleges leállást, hogyan kezelje a docker
 -v: a conténer mapparendszerét  myNodeREDdata a konténeren kívülli rendszer mapparendszerrel /data (conténer:külső mappa)
@@ -125,12 +158,6 @@ Részek funkciója:
 Forrás: 
 https://nodered.org/docs/getting-started/docker
 https://docs.docker.com/reference/cli/docker/container/run/#device
-
-```console
-sudo docker run -t -d -p 8086:8086 --name  database --restart unless-stopped influxdb:latest
-```
-
-~~sudo docker run -t -d -p 1883:1883 --name mqttbroker --restart unless-stopped eclipse-mosquitto~~
 
 
 Indítás után a következő címeken érhetőek el a konténerek:
