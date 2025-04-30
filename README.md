@@ -289,7 +289,7 @@ DataType - Az eszköz adattípusát (3 féle): Jelenlegi érték (Current), Beá
 
 
 |---------|---------|-----------|
-|Current  | SetVal  | FunParam  | 
+|Current  | SetVal  | CalibData | 
 |---------|---------|-----------|
 |ECstate 	|ECset 		|ECcp1V		  |
 | 		    | 		    |ECcp2V		  |
